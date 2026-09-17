@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tic-Tac-Toe Web Application</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #32106b, #7b2cbf);
+}
+
+.game {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+    color: #4b0082;
+    margin-bottom: 10px;
+}
+
+#status {
+    font-size: 20px;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 20px auto;
+}
+
+.cell {
+    height: 100px;
+    background: #eee5f7;
+    border: none;
+    border-radius: 10px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #4b0082;
+    cursor: pointer;
+}
+
+.cell:hover {
+    background: #ddd0eb;
+}
+
+button#restart {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    background: #4b0082;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button#restart:hover {
+    background: #222;
+}
+
+@media (max-width: 450px) {
+    .cell {
+        height: 80px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>Tic-Tac-Toe</h1>
+
+    <div id="status">Player X's Turn</div>
+
+    <div class="board">
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+        <button class="cell"></button>
+    </div>
+
+    <button id="restart" onclick="restartGame()">Restart Game</button>
+
+</div>
+
+<script>
+
+const cells = document.querySelectorAll(".cell");
+const statusText = document.getElementById("status");
+
+let currentPlayer = "X";
+let gameActive = true;
+
+const winningPatterns = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+];
+
+cells.forEach(function(cell) {
+    cell.addEventListener("click", function() {
+
+        if (cell.innerText !== "" || !gameActive) {
+            return;
+        }
+
+        cell.innerText = currentPlayer;
+
+        checkWinner();
+
+    });
+});
+
+function checkWinner() {
+
+    let winner = null;
+
+    for (let pattern of winningPatterns) {
+
+        let a = cells[pattern[0]].innerText;
+        let b = cells[pattern[1]].innerText;
+        let c = cells[pattern[2]].innerText;
+
+        if (a !== "" && a === b && b === c) {
+            winner = a;
+            break;
+        }
+    }
+
+    if (winner) {
+        statusText.innerText = "Player " + winner + " Wins!";
+        gameActive = false;
+        return;
+    }
+
+    let draw = true;
+
+    cells.forEach(function(cell) {
+        if (cell.innerText === "") {
+            draw = false;
+        }
+    });
+
+    if (draw) {
+        statusText.innerText = "Game Draw!";
+        gameActive = false;
+        return;
+    }
+
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+    statusText.innerText = "Player " + currentPlayer + "'s Turn";
+}
+
+function restartGame() {
+
+    cells.forEach(function(cell) {
+        cell.innerText = "";
+    });
+
+    currentPlayer = "X";
+    gameActive = true;
+
+    statusText.innerText = "Player X's Turn";
+}
+
+</script>
+
+</body>
+          </html>
